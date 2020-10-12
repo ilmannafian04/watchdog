@@ -18,7 +18,7 @@ stages:
 build:be:
   <<: *docker-base
   variables:
-      IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog_be
+      IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog/watchdog_be
       BRANCH_TAG: latest
   # only:
     # - master
@@ -29,7 +29,7 @@ build:fe:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - cd watchdog_fe
   variables:
-      IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog_fe
+      IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog/watchdog_fe
       BRANCH_TAG: latest
   # only:
     # - master
