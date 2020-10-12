@@ -11,4 +11,4 @@ RUN poetry config virtualenvs.create false && \
 RUN apk --purge del .build-deps
 COPY . .
 
-CMD ["gunicorn", "watchdog_be.wsgi", "--access-logfile", "-",  "--error-logfile", "-", "-b", "0.0.0.0:8000"]
+CMD ["gunicorn", "watchdog_be.wsgi", "-b", "0.0.0.0:8000"]

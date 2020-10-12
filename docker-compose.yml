@@ -25,7 +25,7 @@ services:
   be_asgi:
     image: registry.gitlab.com/ilmannafian04/watchdog/watchdog_be:latest
     env_file: ./watchdog_be/.env
-    command: ["daphne", "-b", "0.0.0.0", "-p", "8001", "watchdog_be.asgi"]
+    command: ["daphne", "-b", "0.0.0.0", "-p", "8001", "watchdog_be.asgi:application"]
     depends_on:
       - db
       - cache
