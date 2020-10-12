@@ -1,0 +1,32 @@
+stages:
+  - build
+
+.deploy-template: &docker-base
+  image: docker
+  stage: build
+  services:
+      - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - cd watchdog_be
+  script:
+    - docker pull $IMAGE_NAME || true
+    - docker build --cache-from $IMAGE_NAME:$BRANCH_TAG --tag $CI_IMAGE_NAME:$CI_COMMIT_SHA --tag $IMAGE_NAME:$BRANCH_TAG .
+    - docker push $CI_IMAGE_NAME:$CI_COMMIT_SHA
+    - docker push $CI_IMAGE_NAME:$BRANCH_TAG
+
+build:be:
+  <<: *docker-base
+  variables:
+      IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog_be
+      BRANCH_TAG: latest
+  # only:
+    # - master
+
+build:fe:
+  <<: *docker-base
+  variables:
+      IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog_fe
+      BRANCH_TAG: latest
+  # only:
+    # - master
