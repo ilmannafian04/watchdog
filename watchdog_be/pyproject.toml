@@ -8,6 +8,8 @@ authors = ["Ilman Nafian <milmannafian04@gmail.com>"]
 python = "^3.8.5"
 Django = "^3.1.2"
 django-environ = "^0.4.5"
+gunicorn = "^20.0.4"
+daphne = "^2.5.0"
 
 [tool.poetry.dev-dependencies]
 
