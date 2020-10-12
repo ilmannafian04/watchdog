@@ -25,6 +25,9 @@ build:be:
 
 build:fe:
   <<: *docker-base
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - cd watchdog_fe
   variables:
       IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog_fe
       BRANCH_TAG: latest
