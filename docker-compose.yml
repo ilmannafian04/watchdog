@@ -15,14 +15,16 @@ services:
     expose:
       - "6379"
   be_wsgi:
-    build: ./watchdog_be
+    image: registry.gitlab.com/ilmannafian04/watchdog/watchdog_be:latest
+    env_file: ./watchdog_be/.env
     depends_on:
       - db
       - cache
     expose:
       - "8000"
   be_asgi:
-    build: ./watchdog_be
+    image: registry.gitlab.com/ilmannafian04/watchdog/watchdog_be:latest
+    env_file: ./watchdog_be/.env
     command: ["daphne", "-b", "0.0.0.0", "-p", "8001", "watchdog_be.asgi"]
     depends_on:
       - db
@@ -30,7 +32,7 @@ services:
     expose:
       - "8001"
   fe:
-    build: ./watchdog_fe
+    image: registry.gitlab.com/ilmannafian04/watchdog/watchdog_fe:latest
     depends_on:
       - be_wsgi
       - be_asgi
