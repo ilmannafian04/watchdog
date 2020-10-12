@@ -1,0 +1,7 @@
+version: "3.8"
+
+services:
+  fe:
+    build: ./watchdog_fe
+    ports:
+      - "80:80"
