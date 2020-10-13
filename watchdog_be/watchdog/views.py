@@ -1,18 +1,25 @@
 from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_POST
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+from watchdog.models import WatchDogUser
 
 
+@api_view(['GET'])
 def ping(request):
     return HttpResponse('pong')
 
 
-@ensure_csrf_cookie
-def set_csrf_token(request):
-    return JsonResponse({'status': 'OK'})
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ping_but_protected(request):
+    return HttpResponse('protected pong')
 
 
-@require_POST
+@api_view(['POST'])
 def signup_account(request):
-    print(request)
-    return JsonResponse({'status': 'lol'})
+    new_user = WatchDogUser.objects.create_user(request.POST['username'],
+                                                password=request.POST['password'],
+                                                email=request.POST['email'])
+    new_user.save()
+    return JsonResponse({'status': 'OK'})

@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'watchdog.apps.WatchdogConfig',
     'channels',
     'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'watchdog_be.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
 
 TEMPLATES = [
     {
@@ -122,6 +130,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'watchdog.WatchDogUser'
+
+CSRF_HEADER_NAME = 'X-CSRFToken'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
