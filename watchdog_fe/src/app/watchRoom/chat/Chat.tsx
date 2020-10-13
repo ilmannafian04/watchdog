@@ -63,7 +63,7 @@ const Chat = () => {
     }, [name, color]);
     return (
         <Box display="flex" flexDirection="column" height={window.innerHeight} width="300px">
-            <Box flexGrow={2}>
+            <Box flexGrow={2} maxHeight="100%" style={{ overflowY: 'scroll' }}>
                 <ChatBox messages={messages} />
             </Box>
             <ChatForm
