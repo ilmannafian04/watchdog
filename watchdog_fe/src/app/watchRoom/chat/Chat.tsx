@@ -62,7 +62,7 @@ const Chat = () => {
         }
     }, [name, color]);
     return (
-        <Box display="flex" flexDirection="column" height={window.innerHeight}>
+        <Box display="flex" flexDirection="column" height={window.innerHeight} width="300px">
             <Box flexGrow={2}>
                 <ChatBox messages={messages} />
             </Box>

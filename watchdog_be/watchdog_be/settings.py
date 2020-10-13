@@ -33,6 +33,10 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:3000'
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,11 +48,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'watchdog.apps.WatchdogConfig',
     'channels',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -114,6 +120,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTH_USER_MODEL = 'watchdog.WatchDogUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
