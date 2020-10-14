@@ -14,8 +14,10 @@ const validateData = (data: SignUpFormState) => {
     return valid;
 };
 
+const initialFormState = { username: '', email: '', password: '' };
+
 const SignUpForm = () => {
-    const [formState, setFormState] = useState<SignUpFormState>({ username: '', email: '', password: '' });
+    const [formState, setFormState] = useState<SignUpFormState>(initialFormState);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const changeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const target = event.target;
@@ -37,6 +39,9 @@ const SignUpForm = () => {
         setIsSubmitting(true);
         if (validateData(formState)) {
             Axios.post('/account/signup', new FormData(event.currentTarget))
+                .then(() => {
+                    setFormState(initialFormState);
+                })
                 .catch((error) => {
                     console.error(error);
                 })

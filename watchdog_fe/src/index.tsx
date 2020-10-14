@@ -2,6 +2,7 @@ import { CssBaseline } from '@material-ui/core';
 import Axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import 'fontsource-roboto';
 
@@ -16,10 +17,12 @@ Axios.interceptors.response.use((response) => response, jwtResponseInterceptor);
 
 ReactDOM.render(
     <React.StrictMode>
-        <RecoilRoot>
-            <CssBaseline />
-            <App />
-        </RecoilRoot>
+        <BrowserRouter>
+            <RecoilRoot>
+                <CssBaseline />
+                <App />
+            </RecoilRoot>
+        </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root')
 );

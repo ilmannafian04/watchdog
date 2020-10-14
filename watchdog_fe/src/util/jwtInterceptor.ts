@@ -2,12 +2,12 @@ import Axios, { AxiosRequestConfig } from 'axios';
 
 export const jwtRequestInterceptor = (config: AxiosRequestConfig) => {
     const accessToken = window.localStorage.getItem('watchdogAccessToken');
-    config.headers.Authorization = `Bearer ${accessToken}`;
+    if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
     return config;
 };
 
 export const jwtResponseInterceptor = (error: any) => {
-    if (error.response.status !== 401) {
+    if (error.response?.status !== 401) {
         return Promise.reject(error);
     }
     if (error.config.url === '/api/token/refresh' || error.response.message === 'Account is disabled.') {

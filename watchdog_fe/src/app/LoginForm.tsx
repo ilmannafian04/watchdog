@@ -1,6 +1,9 @@
 import { Button, TextField } from '@material-ui/core';
 import Axios from 'axios';
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+
+import userAtom from '../atom/userAtom';
 
 interface LoginFormState {
     username: string;
@@ -8,16 +11,17 @@ interface LoginFormState {
 }
 
 const LoginForm = () => {
-    const [formState, setFormstate] = useState<LoginFormState>({ username: '', password: '' });
+    const [formState, setFormState] = useState<LoginFormState>({ username: '', password: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const setUser = useSetRecoilState(userAtom);
     const changeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const target = event.target;
         switch (target.name) {
             case 'username':
-                setFormstate({ ...formState, username: target.value });
+                setFormState({ ...formState, username: target.value });
                 break;
             case 'password':
-                setFormstate({ ...formState, password: target.value });
+                setFormState({ ...formState, password: target.value });
                 break;
             default:
         }
@@ -29,6 +33,9 @@ const LoginForm = () => {
             .then((response) => {
                 window.localStorage.setItem('watchdogAccessToken', response.data['access']);
                 window.localStorage.setItem('watchdogRefreshToken', response.data['refresh']);
+                setUser((prev) => {
+                    return { ...prev, loggedIn: true };
+                });
             })
             .catch((error) => {
                 console.error(error);
