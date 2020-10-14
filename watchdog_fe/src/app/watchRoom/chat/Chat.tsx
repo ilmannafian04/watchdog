@@ -6,6 +6,7 @@ import { adjectives, animals, uniqueNamesGenerator } from 'unique-names-generato
 import ChatBox from './ChatBox';
 import ChatForm from './ChatForm';
 import { ChatMessageData } from './ChatMessage';
+import { baseUrl, wsProtocol } from '../../../util/urlResolver';
 
 const Chat = () => {
     const [socket, setSocket] = useState<WebSocket>();
@@ -13,7 +14,7 @@ const Chat = () => {
     const [name, setName] = useState<string>('');
     const [color, setColor] = useState<string>('');
     useEffect(() => {
-        const ws = new WebSocket('ws://localhost:8000/ws/chat/lol/');
+        const ws = new WebSocket(`${baseUrl(wsProtocol)}/ws/chat/lol/`);
         ws.onopen = () => {
             setSocket(ws);
         };

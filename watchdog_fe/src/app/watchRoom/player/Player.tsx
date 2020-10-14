@@ -8,13 +8,14 @@ import PlayerWindow from './PlayerWindow';
 import roomSocketAtom from '../../../atom/roomSocketAtom';
 import playerStateAtom from '../../../atom/playerStateAtom';
 import { BaseWebSocketDTO } from '../../../type/dto';
+import { baseUrl, wsProtocol } from '../../../util/urlResolver';
 
 const Player = () => {
     const playerRef = useRef<ReactPlayer>(null);
     const [roomSocket, setRoomSocket] = useRecoilState(roomSocketAtom);
     const [playerState, setPlayerState] = useRecoilState(playerStateAtom);
     useEffect(() => {
-        const socket = new WebSocket('ws://127.0.0.1:8000/ws/watch/lol/');
+        const socket = new WebSocket(`${baseUrl(wsProtocol)}/ws/watch/lol/`);
         socket.onopen = () => {
             setRoomSocket((prev) => {
                 return { ...prev, player: socket };
