@@ -11,7 +11,7 @@ export const jwtResponseInterceptor = (error: any) => {
         return Promise.reject(error);
     }
     if (error.config.url === '/api/token/refresh' || error.response.message === 'Account is disabled.') {
-        window.localStorage.removeItem('watchdogAccesToken');
+        window.localStorage.removeItem('watchdogAccessToken');
         window.localStorage.removeItem('watchdogRefreshToken');
         return Promise.reject(error);
     }
@@ -30,12 +30,12 @@ export const jwtResponseInterceptor = (error: any) => {
                     resolve(res);
                 })
                 .catch((err) => {
-                    window.localStorage.removeItem('watchdogAccesToken');
+                    window.localStorage.removeItem('watchdogAccessToken');
                     window.localStorage.removeItem('watchdogRefreshToken');
                     reject(err);
                 });
         }).catch((error) => {
-            window.localStorage.removeItem('watchdogAccesToken');
+            window.localStorage.removeItem('watchdogAccessToken');
             window.localStorage.removeItem('watchdogRefreshToken');
             return Promise.reject(error);
         });
