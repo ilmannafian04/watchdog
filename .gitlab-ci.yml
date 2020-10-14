@@ -20,8 +20,8 @@ build:be:
   variables:
       IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog/watchdog_be
       BRANCH_TAG: latest
-  # only:
-    # - master
+  only:
+    - master
 
 build:fe:
   <<: *docker-base
@@ -31,5 +31,5 @@ build:fe:
   variables:
       IMAGE_NAME: $CI_REGISTRY/ilmannafian04/watchdog/watchdog_fe
       BRANCH_TAG: latest
-  # only:
-    # - master
+  only:
+    - master
