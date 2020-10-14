@@ -6,4 +6,5 @@ urlpatterns = [
     path('ping', views.ping),
     path('pingbutprotected', views.ping_but_protected),
     path('account/signup', views.signup_account),
+    path('watchroom', views.WatchRoomView.as_view())
 ]

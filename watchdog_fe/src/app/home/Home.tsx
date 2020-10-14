@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard/Dashboard';
 import Landing from './landing/Landing';
 import userAtom from '../../atom/userAtom';
 
