@@ -1,8 +1,9 @@
 import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
-import playerStateAtom from '../../../atom/PlayerStateAtom';
+import playerStateAtom from '../../../atom/playerStateAtom';
+import roomSocketAtom from '../../../atom/roomSocketAtom';
 
 interface PlayerWindowProps {
     playerRef: RefObject<ReactPlayer>;
@@ -11,6 +12,7 @@ interface PlayerWindowProps {
 const PlayerWindow: FunctionComponent<PlayerWindowProps> = ({ playerRef }) => {
     const [playerWidth, setPlayerWidth] = useState(400);
     const [playerState, setPlayerState] = useRecoilState(playerStateAtom);
+    const roomSocket = useRecoilValue(roomSocketAtom);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         if (wrapperRef.current !== null) {
@@ -21,14 +23,25 @@ const PlayerWindow: FunctionComponent<PlayerWindowProps> = ({ playerRef }) => {
             setPlayerWidth(newHeight);
         }
     }, [wrapperRef]);
+    const handlerPlayerManualPlayPause = (event: string) => {
+        if (event === 'play' && !playerState.playing) {
+            roomSocket.player?.send(JSON.stringify({ type: 'playerCommand', data: 'play' }));
+            setPlayerState({ ...playerState, playing: true });
+        } else if (event === 'pause' && playerState.playing) {
+            roomSocket.player?.send(JSON.stringify({ type: 'playerCommand', data: 'pause' }));
+            setPlayerState({ ...playerState, playing: false });
+        }
+    };
     return (
         <div ref={wrapperRef}>
             <ReactPlayer
                 ref={playerRef}
-                url="https://youtu.be/I4ocxF3sSI0"
+                url={playerState.url}
                 width="100%"
                 height={playerWidth}
                 playing={playerState.playing}
+                onPlay={() => handlerPlayerManualPlayPause('play')}
+                onPause={() => handlerPlayerManualPlayPause('pause')}
                 onEnded={() => setPlayerState({ ...playerState, playing: false })}
             />
         </div>
