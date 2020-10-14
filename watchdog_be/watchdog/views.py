@@ -48,6 +48,8 @@ class WatchRoomView(APIView):
             room.save()
             watcher = WatchRoomWatcher(room=room, watcher=request.user)
             watcher.save()
-            return Response({'room': model_to_dict(room)})
+            result = model_to_dict(room)
+            result['memberCount'] = 1
+            return Response({'room': result})
         else:
             return Response(status=400)
