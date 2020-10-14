@@ -2,8 +2,8 @@ import { Box, Paper } from '@material-ui/core';
 import React from 'react';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 
-import LoginForm from '../LoginForm';
-import SignUpForm from '../SignUpForm';
+import LoginForm from './LoginForm';
+import SignUpForm from './SignUpForm';
 
 const Landing = () => {
     const { pathname } = useLocation();
@@ -31,10 +31,10 @@ const Landing = () => {
                 <Box flexGrow={1} display="flex" justifyContent="center" alignItems="center">
                     <Paper>
                         <Switch>
-                            <Route exact path={'/'}>
+                            <Route exact path="/">
                                 <LoginForm />
                             </Route>
-                            <Route path={'/signup'}>
+                            <Route path="/signup">
                                 <SignUpForm />
                             </Route>
                         </Switch>

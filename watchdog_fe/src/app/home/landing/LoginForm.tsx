@@ -4,7 +4,7 @@ import React, { ChangeEvent, FormEvent, MouseEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
-import userAtom from '../atom/userAtom';
+import userAtom from '../../../atom/userAtom';
 
 interface LoginFormState {
     username: string;

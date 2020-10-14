@@ -2,7 +2,7 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import Dashboard from './Dashboard';
-import Landing from './Landing';
+import Landing from './landing/Landing';
 import userAtom from '../../atom/userAtom';
 
 const Home = () => {
