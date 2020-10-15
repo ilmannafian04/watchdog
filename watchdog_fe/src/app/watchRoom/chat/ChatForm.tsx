@@ -3,10 +3,13 @@ import React, { ChangeEvent, FormEvent, KeyboardEvent, useRef, useState } from '
 import { useRecoilValue } from 'recoil';
 
 import roomSocketAtom from '../../../atom/roomSocketAtom';
+import Axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const ChatForm = () => {
     const [message, setMessage] = useState<string>('');
     const socket = useRecoilValue(roomSocketAtom);
+    const { roomCode } = useParams();
     const formRef = useRef<HTMLFormElement>(null);
     const messageChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         if (!/\n/.test(event.target.value)) {
@@ -14,7 +17,29 @@ const ChatForm = () => {
         }
     };
     const sendChat = () => {
-        if (message.length > 0) {
+        if (message.charAt(0) === '/') {
+            let commandString = message.replace('/', '');
+            const command = commandString.split(' ')[0];
+            const argument = commandString.slice(commandString.indexOf(' ') + 1);
+            const data = new FormData();
+            data.append('id', roomCode);
+            switch (command) {
+                case 'changename':
+                    data.append('name', argument);
+                    Axios.post('watcher', data)
+                        .then(() => {})
+                        .catch((error) => console.error(error));
+                    break;
+                case 'changecolor':
+                    data.append('color', argument);
+                    Axios.post('watcher', data)
+                        .then(() => {})
+                        .catch((error) => console.error(error));
+                    break;
+                default:
+            }
+            setMessage('');
+        } else if (message.length > 0) {
             socket.chat?.send(JSON.stringify({ type: 'newMessage', data: message }));
             setMessage('');
         }

@@ -1,4 +1,5 @@
 import random
+import re
 import string
 
 import namesgenerator
@@ -72,6 +73,30 @@ def delete_watchroom(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
         room.delete()
         return Response({'id': request.POST['id']})
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def customize_watcher(request):
+    if 'id' in request.POST:
+        try:
+            room = WatchRoom.objects.get(id=request.POST['id'])
+        except WatchRoom.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        watcher = WatchRoomWatcher.objects.get(watcher=request.user, room=room)
+        if 'name' in request.POST:
+            if len(request.POST['name']) == 0 and len(request.POST['name']) > 20:
+                return Response(status.HTTP_400_BAD_REQUEST)
+            watcher.name = request.POST['name']
+        elif 'color' in request.POST:
+            match = re.search(request.POST['color'], '^#(?:[0-9a-fA-F]{3}){1,2}$')
+            if len(request.POST['color']) != 7 and not match:
+                return Response(status.HTTP_400_BAD_REQUEST)
+            watcher.color = request.POST['color']
+        watcher.save()
+        return Response({'status': 'OK'})
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
