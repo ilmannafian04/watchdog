@@ -1,5 +1,7 @@
 FROM node:alpine as builder
 
+ENV GENERATE_SOURCEMAP=false
+
 WORKDIR /home
 COPY ./package.json ./package-lock.json ./
 RUN npm ci
