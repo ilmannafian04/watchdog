@@ -10,7 +10,11 @@ export const jwtResponseInterceptor = (error: any) => {
     if (error.response?.status !== 401) {
         return Promise.reject(error);
     }
-    if (error.config.url === '/api/token/refresh' || error.response.message === 'Account is disabled.') {
+    if (
+        error.config.url === '/token/refresh' ||
+        error.response.data.detail === 'User is inactive' ||
+        error.response.data.detail === 'User not found'
+    ) {
         window.localStorage.removeItem('watchdogAccessToken');
         window.localStorage.removeItem('watchdogRefreshToken');
         return Promise.reject(error);
