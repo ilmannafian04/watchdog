@@ -1,18 +1,16 @@
 import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import currentRoomAtom from '../../../atom/currentRoomAtom';
 import playerStateAtom from '../../../atom/playerStateAtom';
 import roomSocketAtom from '../../../atom/roomSocketAtom';
+import playerProgressAtom from '../../../atom/playerProgressAtom';
 
-interface PlayerWindowProps {
-    playerRef: RefObject<ReactPlayer>;
-}
-
-const PlayerWindow: FunctionComponent<PlayerWindowProps> = ({ playerRef }) => {
+const PlayerWindow: FunctionComponent<{ playerRef: RefObject<ReactPlayer> }> = ({ playerRef }) => {
     const [playerWidth, setPlayerWidth] = useState(400);
     const [playerState, setPlayerState] = useRecoilState(playerStateAtom);
+    const setPlayerProgress = useSetRecoilState(playerProgressAtom);
     const currentRoom = useRecoilValue(currentRoomAtom);
     const roomSocket = useRecoilValue(roomSocketAtom);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -45,6 +43,8 @@ const PlayerWindow: FunctionComponent<PlayerWindowProps> = ({ playerRef }) => {
                 onPlay={() => handlerPlayerManualPlayPause('play')}
                 onPause={() => handlerPlayerManualPlayPause('pause')}
                 onEnded={() => setPlayerState({ ...playerState, playing: false })}
+                onSeek={() => console.log('seeked')}
+                onProgress={(state) => setPlayerProgress(state)}
             />
         </div>
     );

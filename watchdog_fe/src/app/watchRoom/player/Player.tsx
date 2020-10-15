@@ -37,12 +37,13 @@ const Player = () => {
             const message: BaseWebSocketDTO = JSON.parse(event.data);
             switch (message.type) {
                 case 'playerCommand':
-                    switch (message.data) {
+                    switch (message.data['command']) {
                         case 'play':
                             setPlayerState({ ...playerState, playing: true });
                             break;
                         case 'pause':
                             setPlayerState({ ...playerState, playing: false });
+                            playerRef.current?.seekTo(message.data['timestamp'], 'fraction');
                             break;
                         default:
                     }

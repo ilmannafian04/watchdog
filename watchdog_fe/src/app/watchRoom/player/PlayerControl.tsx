@@ -2,13 +2,15 @@ import { Box, Button, Slider, TextField } from '@material-ui/core';
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import currentRoomAtom from '../../../atom/currentRoomAtom';
+import playerProgressAtom from '../../../atom/playerProgressAtom';
 import playerStateAtom from '../../../atom/playerStateAtom';
 import roomSocketAtom from '../../../atom/roomSocketAtom';
-import currentRoomAtom from '../../../atom/currentRoomAtom';
 
 const PlayerControl = () => {
     const [playerState, setPlayerState] = useRecoilState(playerStateAtom);
     const [urlForm, setUrlForm] = useState('');
+    const playerProgress = useRecoilValue(playerProgressAtom);
     const currentRoom = useRecoilValue(currentRoomAtom);
     const roomSocket = useRecoilValue(roomSocketAtom);
     const setPlaying = (playing: boolean) => {
@@ -45,7 +47,10 @@ const PlayerControl = () => {
                             roomSocket.player?.send(
                                 JSON.stringify({
                                     type: 'playerCommand',
-                                    data: playerState.playing ? 'pause' : 'play',
+                                    data: {
+                                        command: playerState.playing ? 'pause' : 'play',
+                                        timestamp: playerProgress.played,
+                                    },
                                 })
                             );
                         }}
