@@ -4,10 +4,12 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import playerStateAtom from '../../../atom/playerStateAtom';
 import roomSocketAtom from '../../../atom/roomSocketAtom';
+import currentRoomAtom from '../../../atom/currentRoomAtom';
 
 const PlayerControl = () => {
     const [playerState, setPlayerState] = useRecoilState(playerStateAtom);
     const [urlForm, setUrlForm] = useState('');
+    const currentRoom = useRecoilValue(currentRoomAtom);
     const roomSocket = useRecoilValue(roomSocketAtom);
     const setPlaying = (playing: boolean) => {
         setPlayerState((state) => {
@@ -17,6 +19,7 @@ const PlayerControl = () => {
     const handleSetUrl = (event: FormEvent) => {
         event.preventDefault();
         roomSocket.player?.send(JSON.stringify({ type: 'changeVideo', data: urlForm }));
+        setUrlForm('');
     };
     return (
         <Box width="100%">
@@ -27,7 +30,7 @@ const PlayerControl = () => {
                         <Box display="flex">
                             <TextField
                                 variant="outlined"
-                                placeholder={playerState.url}
+                                placeholder={playerState.url ? playerState.url : currentRoom.currentVideo}
                                 label="Video URL"
                                 value={urlForm}
                                 onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setUrlForm(event.target.value)}

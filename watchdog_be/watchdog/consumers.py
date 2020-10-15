@@ -56,6 +56,7 @@ class WatchPartyConsumer(AsyncJsonWebsocketConsumer):
                                                                        'broadcast_sender': self.channel_name,
                                                                        'data': content['data']})
         elif content['type'] == 'changeVideo':
+            await self.set_video_in_model(content['data'])
             await self.channel_layer.group_send(self.room_group_name, {'type': 'watch.change_video',
                                                                        'broadcast_sender': self.channel_name,
                                                                        'data': content['data']})
@@ -66,3 +67,9 @@ class WatchPartyConsumer(AsyncJsonWebsocketConsumer):
     async def watch_player_command(self, event):
         if event['broadcast_sender'] != self.channel_name:
             await self.send_json({'type': 'playerCommand', 'data': event['data']})
+
+    @database_sync_to_async
+    def set_video_in_model(self, url):
+        room = WatchRoom.objects.get(id=self.room_code)
+        room.current_video = url
+        room.save()

@@ -12,6 +12,7 @@ class WatchDogUser(AbstractUser):
 class WatchRoom(models.Model):
     owner = models.ForeignKey(WatchDogUser, models.CASCADE)
     name = models.CharField(max_length=30)
+    current_video = models.URLField(null=True)
     join_code = models.CharField(max_length=5, unique=True, null=True)
 
     def generate_join_code(self):

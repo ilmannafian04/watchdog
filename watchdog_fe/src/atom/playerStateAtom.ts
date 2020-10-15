@@ -7,7 +7,7 @@ export interface PlayerState {
 
 const playerStateAtom = atom<PlayerState>({
     key: 'playerState',
-    default: { playing: false, url: 'https://youtu.be/I4ocxF3sSI0' },
+    default: { playing: false, url: '' },
 });
 
 export default playerStateAtom;

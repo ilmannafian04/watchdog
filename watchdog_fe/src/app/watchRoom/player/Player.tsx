@@ -1,5 +1,4 @@
 import { Box } from '@material-ui/core';
-import Axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import ReactPlayer from 'react-player';
 import { useParams } from 'react-router-dom';
@@ -20,20 +19,16 @@ const Player = () => {
     useEffect(() => {
         let socket: WebSocket;
         if (roomCode) {
-            Axios.get('/pingbutprotected')
-                .then(() => {
-                    socket = new WebSocket(
-                        `${baseUrl(wsProtocol)}/ws/watch/${roomCode}/?token=${window.localStorage.getItem(
-                            'watchdogAccessToken'
-                        )}`
-                    );
-                    socket.onopen = () => {
-                        setRoomSocket((prev) => {
-                            return { ...prev, player: socket };
-                        });
-                    };
-                })
-                .catch((error) => console.error(error));
+            socket = new WebSocket(
+                `${baseUrl(wsProtocol)}/ws/watch/${roomCode}/?token=${window.localStorage.getItem(
+                    'watchdogAccessToken'
+                )}`
+            );
+            socket.onopen = () => {
+                setRoomSocket((prev) => {
+                    return { ...prev, player: socket };
+                });
+            };
         }
         return () => socket?.close();
     }, [setRoomSocket, roomCode]);

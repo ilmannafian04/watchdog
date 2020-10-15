@@ -41,7 +41,10 @@ class WatchRoomView(APIView):
         if 'id' in request.GET:
             try:
                 room = WatchRoom.objects.get(id=int(request.GET['id']))
-                return Response({'room': model_to_dict(room)})
+                return Response({'room': {'id': room.id,
+                                          'currentVideo': room.current_video,
+                                          'owner': room.owner.username,
+                                          'name': room.name}})
             except WatchRoom.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:

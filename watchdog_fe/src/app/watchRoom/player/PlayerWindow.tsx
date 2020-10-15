@@ -2,6 +2,7 @@ import React, { FunctionComponent, RefObject, useEffect, useRef, useState } from
 import ReactPlayer from 'react-player';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import currentRoomAtom from '../../../atom/currentRoomAtom';
 import playerStateAtom from '../../../atom/playerStateAtom';
 import roomSocketAtom from '../../../atom/roomSocketAtom';
 
@@ -12,6 +13,7 @@ interface PlayerWindowProps {
 const PlayerWindow: FunctionComponent<PlayerWindowProps> = ({ playerRef }) => {
     const [playerWidth, setPlayerWidth] = useState(400);
     const [playerState, setPlayerState] = useRecoilState(playerStateAtom);
+    const currentRoom = useRecoilValue(currentRoomAtom);
     const roomSocket = useRecoilValue(roomSocketAtom);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
@@ -36,7 +38,7 @@ const PlayerWindow: FunctionComponent<PlayerWindowProps> = ({ playerRef }) => {
         <div ref={wrapperRef}>
             <ReactPlayer
                 ref={playerRef}
-                url={playerState.url}
+                url={playerState.url ? playerState.url : currentRoom.currentVideo}
                 width="100%"
                 height={playerWidth}
                 playing={playerState.playing}
