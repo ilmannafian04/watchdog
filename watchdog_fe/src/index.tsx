@@ -1,4 +1,4 @@
-import { CssBaseline } from '@material-ui/core';
+import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import Axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -15,14 +15,22 @@ Axios.defaults.baseURL = `${baseUrl(httpProtocol)}/api`;
 Axios.interceptors.request.use(jwtRequestInterceptor);
 Axios.interceptors.response.use((response) => response, jwtResponseInterceptor);
 
+const theme = createMuiTheme({
+    palette: {
+        type: 'dark',
+    },
+});
+
 ReactDOM.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <RecoilRoot>
-                <CssBaseline />
-                <App />
-            </RecoilRoot>
-        </BrowserRouter>
+        <ThemeProvider theme={theme}>
+            <BrowserRouter>
+                <RecoilRoot>
+                    <CssBaseline />
+                    <App />
+                </RecoilRoot>
+            </BrowserRouter>
+        </ThemeProvider>
     </React.StrictMode>,
     document.getElementById('root')
 );
