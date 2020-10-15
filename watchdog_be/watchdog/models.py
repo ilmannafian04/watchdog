@@ -28,3 +28,4 @@ class WatchRoomWatcher(models.Model):
     room = models.ForeignKey(WatchRoom, models.CASCADE)
     watcher = models.ForeignKey(WatchDogUser, models.CASCADE)
     color = models.CharField(max_length=7, default='#000000')
+    name = models.CharField(max_length=20)

@@ -298,6 +298,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "namesgenerator"
+version = "0.3"
+description = ""
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "psycopg2"
 version = "2.8.6"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
@@ -416,7 +424,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.5,<3.9"
-content-hash = "d4cd793a3bcfdfce74ceac79eb5175a3f189bd653343b41c75be053511f55d55"
+content-hash = "2e66f67fd5502d5e1a485d60fd6dc28c24c4b7ea2741275f26e2796c0479154e"
 
 [metadata.files]
 aioredis = [
@@ -624,6 +632,9 @@ msgpack = [
     {file = "msgpack-1.0.0-cp38-cp38-win32.whl", hash = "sha256:002a0d813e1f7b60da599bdf969e632074f9eec1b96cbed8fb0973a63160a408"},
     {file = "msgpack-1.0.0-cp38-cp38-win_amd64.whl", hash = "sha256:39c54fdebf5fa4dda733369012c59e7d085ebdfe35b6cf648f09d16708f1be5d"},
     {file = "msgpack-1.0.0.tar.gz", hash = "sha256:9534d5cc480d4aff720233411a1f765be90885750b07df772380b34c10ecb5c0"},
+]
+namesgenerator = [
+    {file = "namesgenerator-0.3.tar.gz", hash = "sha256:50a03cc15e95edbf88a7ff86179f217f43eb2b2d6ee30fac3e9a20a54985b72e"},
 ]
 psycopg2 = [
     {file = "psycopg2-2.8.6-cp27-cp27m-win32.whl", hash = "sha256:068115e13c70dc5982dfc00c5d70437fe37c014c808acce119b5448361c03725"},

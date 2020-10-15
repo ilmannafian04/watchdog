@@ -2,6 +2,7 @@ import { Box } from '@material-ui/core';
 import Axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import ReactPlayer from 'react-player';
+import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import PlayerControl from './PlayerControl';
@@ -15,22 +16,27 @@ const Player = () => {
     const [roomSocket, setRoomSocket] = useRecoilState(roomSocketAtom);
     const [playerState, setPlayerState] = useRecoilState(playerStateAtom);
     const playerRef = useRef<ReactPlayer>(null);
+    const { roomCode } = useParams();
     useEffect(() => {
         let socket: WebSocket;
-        Axios.get('/pingbutprotected')
-            .then(() => {
-                socket = new WebSocket(
-                    `${baseUrl(wsProtocol)}/ws/watch/lol/?token=${window.localStorage.getItem('watchdogAccessToken')}`
-                );
-                socket.onopen = () => {
-                    setRoomSocket((prev) => {
-                        return { ...prev, player: socket };
-                    });
-                };
-            })
-            .catch((error) => console.error(error));
+        if (roomCode) {
+            Axios.get('/pingbutprotected')
+                .then(() => {
+                    socket = new WebSocket(
+                        `${baseUrl(wsProtocol)}/ws/watch/${roomCode}/?token=${window.localStorage.getItem(
+                            'watchdogAccessToken'
+                        )}`
+                    );
+                    socket.onopen = () => {
+                        setRoomSocket((prev) => {
+                            return { ...prev, player: socket };
+                        });
+                    };
+                })
+                .catch((error) => console.error(error));
+        }
         return () => socket?.close();
-    }, [setRoomSocket]);
+    }, [setRoomSocket, roomCode]);
     useEffect(() => {
         const stateChangeHandler = (event: MessageEvent) => {
             const message: BaseWebSocketDTO = JSON.parse(event.data);

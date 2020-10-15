@@ -1,14 +1,18 @@
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
+from watchdog.models import WatchRoomWatcher, WatchRoom
 
+
+# noinspection PyAttributeOutsideInit
 class ChatConsumer(AsyncJsonWebsocketConsumer):
-    # noinspection PyAttributeOutsideInit
     async def connect(self):
         if not self.scope['user'].is_authenticated:
             await self.close()
             return
         self.room_code = self.scope['url_route']['kwargs']['room_code']
         self.room_group_name = f'chat_{self.room_code}'
+        await self.set_chat_name_color()
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
@@ -16,10 +20,20 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive_json(self, content, **kwargs):
-        await self.channel_layer.group_send(self.room_group_name, {'type': 'chat.message', 'message': content['data']})
+        await self.channel_layer.group_send(self.room_group_name, {'type': 'chat.message',
+                                                                   'data': {'message': content['data'],
+                                                                            'name': self.chat_name,
+                                                                            'color': self.color}})
 
     async def chat_message(self, event):
-        await self.send_json({'type': 'newMessage', 'data': {'message': event['message']}})
+        await self.send_json({'type': 'newMessage', 'data': event['data']})
+
+    @database_sync_to_async
+    def set_chat_name_color(self):
+        room = WatchRoom.objects.get(id=self.room_code)
+        relation = WatchRoomWatcher.objects.get(room=room, watcher=self.scope['user'])
+        self.color = relation.color
+        self.chat_name = relation.name
 
 
 class WatchPartyConsumer(AsyncJsonWebsocketConsumer):

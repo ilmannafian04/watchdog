@@ -16,6 +16,7 @@ psycopg2 = "^2.8.6"
 django-cors-headers = "^3.5.0"
 djangorestframework = "^3.12.1"
 djangorestframework-simplejwt = "^4.4.0"
+namesgenerator = "^0.3"
 
 [tool.poetry.dev-dependencies]
 

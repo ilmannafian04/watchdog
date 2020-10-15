@@ -1,3 +1,7 @@
+import random
+import string
+
+import namesgenerator
 from django.forms import model_to_dict
 from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view, permission_classes
@@ -46,7 +50,10 @@ class WatchRoomView(APIView):
         if len(request.POST['name']) > 0:
             room = WatchRoom(name=request.POST['name'], owner=request.user)
             room.save()
-            watcher = WatchRoomWatcher(room=room, watcher=request.user)
+            watcher = WatchRoomWatcher(room=room,
+                                       watcher=request.user,
+                                       color=f'#{"".join(random.choice(string.hexdigits) for _ in range(6))}',
+                                       name=namesgenerator.get_random_name().replace('_', ' ').capitalize())
             watcher.save()
             result = model_to_dict(room)
             result['memberCount'] = 1
