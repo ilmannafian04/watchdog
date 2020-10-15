@@ -16,11 +16,7 @@ class WatchRoom(models.Model):
     join_code = models.CharField(max_length=5, unique=True, null=True)
 
     def generate_join_code(self):
-        while True:
-            code = ''.join(random.choice(string.ascii_uppercase) for _ in range(6))
-            rooms = WatchRoom.objects.filter(join_code=code)
-            if len(rooms) == 0:
-                break
+        code = ''.join(random.choice(string.ascii_uppercase) for _ in range(5))
         self.join_code = code
         self.save()
 

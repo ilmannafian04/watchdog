@@ -12,7 +12,6 @@ const ChatBox = () => {
     const bottomAnchor = useRef<HTMLDivElement>(null);
     useEffect(() => {
         const messageHandler = (event: MessageEvent) => {
-            console.log(event.data);
             const message = JSON.parse(event.data);
             if (message['type'] === 'newMessage') setMessages([...messages, message['data']]);
         };

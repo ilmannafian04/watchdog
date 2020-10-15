@@ -2,7 +2,6 @@ import random
 import string
 
 import namesgenerator
-from django.forms import model_to_dict
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -33,6 +32,17 @@ def signup_account(request):
     return JsonResponse({'status': 'OK'})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_join_code(request):
+    try:
+        room = WatchRoom.objects.get(id=request.POST['id'])
+        room.generate_join_code()
+        return Response({'code': room.join_code})
+    except (KeyError, WatchRoom.DoesNotExist):
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
 class WatchRoomView(APIView):
     permission_classes = [IsAuthenticated, ]
 
@@ -43,31 +53,46 @@ class WatchRoomView(APIView):
                 room = WatchRoom.objects.get(id=int(request.GET['id']))
                 return Response({'room': {'id': room.id,
                                           'currentVideo': room.current_video,
+                                          'joinCode': room.join_code,
                                           'owner': room.owner.username,
-                                          'name': room.name}})
+                                          'name': room.name,
+                                          'memberCount': len(WatchRoomWatcher.objects.filter(room=room))}})
             except WatchRoom.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
-            rooms = WatchRoom.objects.filter(owner=request.user)
+            watchers = WatchRoomWatcher.objects.filter(watcher=request.user)
             result = []
-            for room in rooms:
-                result.append({'id': room.id,
-                               'name': room.name,
-                               'memberCount': len(WatchRoomWatcher.objects.filter(room=room))})
+            for watcher in watchers:
+                result.append({'id': watcher.room.id,
+                               'currentVideo': watcher.room.current_video,
+                               'joinCode': watcher.room.join_code,
+                               'owner': watcher.room.owner.username,
+                               'name': watcher.room.name,
+                               'memberCount': len(WatchRoomWatcher.objects.filter(room=watcher.room))})
             return Response(result)
 
     @staticmethod
     def post(request):
-        if len(request.POST['name']) > 0:
-            room = WatchRoom(name=request.POST['name'], owner=request.user)
-            room.save()
-            watcher = WatchRoomWatcher(room=room,
-                                       watcher=request.user,
-                                       color=f'#{"".join(random.choice(string.hexdigits) for _ in range(6))}',
-                                       name=namesgenerator.get_random_name().replace('_', ' ').capitalize())
-            watcher.save()
-            result = model_to_dict(room)
-            result['memberCount'] = 1
-            return Response({'room': result})
-        else:
-            return Response(status=400)
+        if 'name' in request.POST or 'code' in request.POST:
+            if 'name' in request.POST:
+                room = WatchRoom(name=request.POST['name'], owner=request.user)
+                room.save()
+            else:
+                try:
+                    room = WatchRoom.objects.get(join_code=request.POST['code'])
+                    watcher = WatchRoomWatcher.objects.filter(room=room, watcher=request.user)
+                    if len(watcher) > 0:
+                        return Response({'status': 'Already Joined'})
+                except (WatchRoom.DoesNotExist, KeyError):
+                    return Response(status=status.HTTP_404_NOT_FOUND)
+            relation = WatchRoomWatcher(room=room,
+                                        watcher=request.user,
+                                        color=f'#{"".join(random.choice(string.hexdigits) for _ in range(6))}',
+                                        name=namesgenerator.get_random_name().replace('_', ' ').capitalize())
+            relation.save()
+            return Response({'room': {'id': room.id,
+                                      'currentVideo': room.current_video,
+                                      'joinCode': room.join_code,
+                                      'owner': room.owner.username,
+                                      'name': room.name,
+                                      'memberCount': len(WatchRoomWatcher.objects.filter(room=room))}})

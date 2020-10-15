@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil';
 import NavBar from './NavBar';
 import NewRoom from './NewRoom';
 import watchRoomsAtom from '../../../atom/watchRoomsAtom';
+import JoinRoom from './JoinRoom';
 
 const Dashboard = () => {
     const [watchRooms, setWatchRooms] = useRecoilState(watchRoomsAtom);
@@ -41,6 +42,7 @@ const Dashboard = () => {
                                 ))}
                             </Box>
                         </List>
+                        <JoinRoom />
                         <NewRoom />
                     </Box>
                 </Paper>
