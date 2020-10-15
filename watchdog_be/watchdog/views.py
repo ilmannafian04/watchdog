@@ -62,6 +62,20 @@ def get_chat_history(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def delete_watchroom(request):
+    if 'id' in request.POST:
+        try:
+            room = WatchRoom.objects.get(id=request.POST['id'])
+        except WatchRoom.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        room.delete()
+        return Response({'id': request.POST['id']})
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class WatchRoomView(APIView):
     permission_classes = [IsAuthenticated, ]
 
@@ -73,7 +87,7 @@ class WatchRoomView(APIView):
                 return Response({'room': {'id': room.id,
                                           'currentVideo': room.current_video,
                                           'joinCode': room.join_code,
-                                          'owner': room.owner.username,
+                                          'owner': request.user.id == room.owner.id,
                                           'name': room.name,
                                           'memberCount': len(WatchRoomWatcher.objects.filter(room=room))}})
             except WatchRoom.DoesNotExist:
@@ -85,7 +99,7 @@ class WatchRoomView(APIView):
                 result.append({'id': watcher.room.id,
                                'currentVideo': watcher.room.current_video,
                                'joinCode': watcher.room.join_code,
-                               'owner': watcher.room.owner.username,
+                               'owner': request.user.id == watcher.room.owner.id,
                                'name': watcher.room.name,
                                'memberCount': len(WatchRoomWatcher.objects.filter(room=watcher.room))})
             return Response(result)
@@ -112,6 +126,6 @@ class WatchRoomView(APIView):
             return Response({'room': {'id': room.id,
                                       'currentVideo': room.current_video,
                                       'joinCode': room.join_code,
-                                      'owner': room.owner.username,
+                                      'owner': request.user.id == room.owner.id,
                                       'name': room.name,
                                       'memberCount': len(WatchRoomWatcher.objects.filter(room=room))}})
