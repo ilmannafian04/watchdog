@@ -52,6 +52,9 @@ const Player = () => {
                         default:
                     }
                     break;
+                case 'changeVideo':
+                    setPlayerState({ ...playerState, url: message.data });
+                    break;
                 default:
             }
         };
