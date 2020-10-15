@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from watchdog.models import WatchRoomWatcher, WatchRoom
+from watchdog.models import WatchRoomWatcher, WatchRoom, ChatMessage
 
 
 # noinspection PyAttributeOutsideInit
@@ -20,10 +20,17 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive_json(self, content, **kwargs):
-        await self.channel_layer.group_send(self.room_group_name, {'type': 'chat.message',
-                                                                   'data': {'message': content['data'],
-                                                                            'name': self.chat_name,
-                                                                            'color': self.color}})
+        type_handler = ''
+        if content['type'] == 'newMessage':
+            if len(content['data']) <= 250:
+                type_handler = 'chat.message'
+                await self.persist_chat(content['data'])
+
+        if type_handler != '':
+            await self.channel_layer.group_send(self.room_group_name, {'type': 'chat.message',
+                                                                       'data': {'message': content['data'],
+                                                                                'name': self.chat_name,
+                                                                                'color': self.color}})
 
     async def chat_message(self, event):
         await self.send_json({'type': 'newMessage', 'data': event['data']})
@@ -34,6 +41,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         relation = WatchRoomWatcher.objects.get(room=room, watcher=self.scope['user'])
         self.color = relation.color
         self.chat_name = relation.name
+
+    @database_sync_to_async
+    def persist_chat(self, message):
+        room = WatchRoom.objects.get(id=self.room_code)
+        relation = WatchRoomWatcher.objects.get(room=room, watcher=self.scope['user'])
+        message = ChatMessage(chatter=self.scope['user'],
+                              room=room,
+                              relation=relation,
+                              message=message)
+        message.save()
 
 
 class WatchPartyConsumer(AsyncJsonWebsocketConsumer):

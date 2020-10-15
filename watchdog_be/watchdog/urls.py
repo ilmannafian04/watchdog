@@ -8,4 +8,5 @@ urlpatterns = [
     path('account/signup', views.signup_account),
     path('watchroom', views.WatchRoomView.as_view()),
     path('watchroom/generatejoin', views.generate_join_code),
+    path('chat', views.get_chat_history)
 ]

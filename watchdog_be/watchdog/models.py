@@ -26,3 +26,14 @@ class WatchRoomWatcher(models.Model):
     watcher = models.ForeignKey(WatchDogUser, models.CASCADE)
     color = models.CharField(max_length=7, default='#000000')
     name = models.CharField(max_length=20)
+
+
+class ChatMessage(models.Model):
+    room = models.ForeignKey(WatchRoom, models.CASCADE)
+    chatter = models.ForeignKey(WatchDogUser, models.CASCADE)
+    relation = models.ForeignKey(WatchRoomWatcher, models.CASCADE)
+    message = models.CharField(max_length=250)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']

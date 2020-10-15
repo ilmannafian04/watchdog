@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from watchdog.models import WatchDogUser, WatchRoom, WatchRoomWatcher
+from watchdog.models import WatchDogUser, WatchRoom, WatchRoomWatcher, ChatMessage
 
 
 @api_view(['GET'])
@@ -41,6 +41,25 @@ def generate_join_code(request):
         return Response({'code': room.join_code})
     except (KeyError, WatchRoom.DoesNotExist):
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_chat_history(request):
+    if 'id' in request.GET:
+        try:
+            room = WatchRoom(id=request.GET['id'])
+        except WatchRoom.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        chat_history = ChatMessage.objects.filter(room=room)[:100]
+        result = []
+        for chat in chat_history:
+            result.append({'message': chat.message,
+                           'name': chat.relation.name,
+                           'color': chat.relation.color})
+        return Response(result)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class WatchRoomView(APIView):

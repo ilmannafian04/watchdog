@@ -14,7 +14,7 @@ const ChatForm = () => {
     };
     const submitHandler = (event: FormEvent) => {
         event.preventDefault();
-        if (message.length > 0) socket.chat?.send(JSON.stringify({ type: 'chat.newMessage', data: message }));
+        if (message.length > 0) socket.chat?.send(JSON.stringify({ type: 'newMessage', data: message }));
     };
     return (
         <form onSubmit={submitHandler}>

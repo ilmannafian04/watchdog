@@ -17,8 +17,8 @@ const PlayerWindow: FunctionComponent<{ playerRef: RefObject<ReactPlayer> }> = (
     useEffect(() => {
         if (wrapperRef.current !== null) {
             let newHeight = (wrapperRef.current.getBoundingClientRect().width / 16) * 9;
-            if (newHeight > (window.innerHeight / 100) * 90) {
-                newHeight = (window.innerHeight / 100) * 90;
+            if (newHeight > (window.innerHeight / 100) * 80) {
+                newHeight = (window.innerHeight / 100) * 80;
             }
             setPlayerWidth(newHeight);
         }
