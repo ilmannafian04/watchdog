@@ -47,7 +47,7 @@ const PlayerControl = () => {
                             if (typeof value === 'number') setSeekValue(value);
                         }}
                         onChangeCommitted={seekEndHandler}
-                        disabled={!currentRoom.currentVideo}
+                        disabled={!(currentRoom.currentVideo || playerState.url)}
                     />
                 </Box>
                 <Box display="flex">
@@ -65,7 +65,7 @@ const PlayerControl = () => {
                         </Box>
                     </form>
                     <Button
-                        disabled={!currentRoom.currentVideo}
+                        disabled={!(currentRoom.currentVideo || playerState.url)}
                         onClick={() => {
                             setPlaying(!playerState.playing);
                             roomSocket.player?.send(
