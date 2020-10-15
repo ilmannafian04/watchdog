@@ -1,12 +1,12 @@
 import { Box, Button, TextField } from '@material-ui/core';
-import React, { ChangeEvent, FormEvent, FunctionComponent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
-interface ChatFormProps {
-    sendFn: (message: string) => void;
-}
+import roomSocketAtom from '../../../atom/roomSocketAtom';
 
-const ChatForm: FunctionComponent<ChatFormProps> = ({ sendFn }) => {
+const ChatForm = () => {
     const [message, setMessage] = useState<string>('');
+    const socket = useRecoilValue(roomSocketAtom);
     const messageChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
         if (!/\n/.test(event.target.value)) {
             setMessage(event.target.value);
@@ -14,7 +14,7 @@ const ChatForm: FunctionComponent<ChatFormProps> = ({ sendFn }) => {
     };
     const submitHandler = (event: FormEvent) => {
         event.preventDefault();
-        if (message.length > 0) sendFn(message);
+        if (message.length > 0) socket.chat?.send(JSON.stringify({ type: 'chat.newMessage', data: message }));
     };
     return (
         <form onSubmit={submitHandler}>

@@ -1,13 +1,9 @@
 import { Box } from '@material-ui/core';
 import React, { FunctionComponent } from 'react';
 
-export interface ChatMessageData {
-    name: string;
-    message: string;
-    color: string;
-}
+import IChatMessage from '../../../type/chatMessage';
 
-const ChatMessage: FunctionComponent<ChatMessageData> = ({ name, message, color }) => {
+const ChatMessage: FunctionComponent<IChatMessage> = ({ name, message, color }) => {
     return (
         <span>
             <Box component={'span'} color={color}>

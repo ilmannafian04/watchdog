@@ -1,14 +1,24 @@
 import { Box } from '@material-ui/core';
-import React, { FunctionComponent, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
-import ChatMessage, { ChatMessageData } from './ChatMessage';
+import ChatMessage from './ChatMessage';
+import roomSocketAtom from '../../../atom/roomSocketAtom';
+import IChatMessage from '../../../type/chatMessage';
 
-interface ChatBoxProps {
-    messages: ChatMessageData[];
-}
-
-const ChatBox: FunctionComponent<ChatBoxProps> = ({ messages }) => {
+const ChatBox = () => {
+    const [messages, setMessages] = useState<IChatMessage[]>([]);
+    const socket = useRecoilValue(roomSocketAtom);
     const bottomAnchor = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const messageHandler = (event: MessageEvent) => {
+            console.log(event.data);
+            const message = JSON.parse(event.data);
+            if (message['type'] === 'newMessage') setMessages([...messages, message['data']]);
+        };
+        socket.chat?.addEventListener('message', messageHandler);
+        return () => socket.chat?.removeEventListener('message', messageHandler);
+    }, [socket, messages]);
     useEffect(() => {
         if (bottomAnchor.current !== null) {
             bottomAnchor.current.scrollIntoView();

@@ -1,4 +1,5 @@
 import Axios, { AxiosRequestConfig } from 'axios';
+import { clearToken } from './auth';
 
 export const jwtRequestInterceptor = (config: AxiosRequestConfig) => {
     const accessToken = window.localStorage.getItem('watchdogAccessToken');
@@ -15,8 +16,7 @@ export const jwtResponseInterceptor = (error: any) => {
         error.response.data.detail === 'User is inactive' ||
         error.response.data.detail === 'User not found'
     ) {
-        window.localStorage.removeItem('watchdogAccessToken');
-        window.localStorage.removeItem('watchdogRefreshToken');
+        clearToken();
         return Promise.reject(error);
     }
     const refreshToken = window.localStorage.getItem('watchdogRefreshToken');
@@ -34,13 +34,11 @@ export const jwtResponseInterceptor = (error: any) => {
                     resolve(res);
                 })
                 .catch((err) => {
-                    window.localStorage.removeItem('watchdogAccessToken');
-                    window.localStorage.removeItem('watchdogRefreshToken');
+                    clearToken();
                     reject(err);
                 });
         }).catch((error) => {
-            window.localStorage.removeItem('watchdogAccessToken');
-            window.localStorage.removeItem('watchdogRefreshToken');
+            clearToken();
             return Promise.reject(error);
         });
     });

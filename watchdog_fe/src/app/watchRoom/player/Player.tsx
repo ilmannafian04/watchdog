@@ -1,4 +1,5 @@
 import { Box } from '@material-ui/core';
+import Axios from 'axios';
 import React, { useEffect, useRef } from 'react';
 import ReactPlayer from 'react-player';
 import { useRecoilState } from 'recoil';
@@ -11,19 +12,24 @@ import { BaseWebSocketDTO } from '../../../type/dto';
 import { baseUrl, wsProtocol } from '../../../util/urlResolver';
 
 const Player = () => {
-    const playerRef = useRef<ReactPlayer>(null);
     const [roomSocket, setRoomSocket] = useRecoilState(roomSocketAtom);
     const [playerState, setPlayerState] = useRecoilState(playerStateAtom);
+    const playerRef = useRef<ReactPlayer>(null);
     useEffect(() => {
-        const socket = new WebSocket(`${baseUrl(wsProtocol)}/ws/watch/lol/`);
-        socket.onopen = () => {
-            setRoomSocket((prev) => {
-                return { ...prev, player: socket };
-            });
-        };
-        return () => {
-            socket.close();
-        };
+        let socket: WebSocket;
+        Axios.get('/pingbutprotected')
+            .then(() => {
+                socket = new WebSocket(
+                    `${baseUrl(wsProtocol)}/ws/watch/lol/?token=${window.localStorage.getItem('watchdogAccessToken')}`
+                );
+                socket.onopen = () => {
+                    setRoomSocket((prev) => {
+                        return { ...prev, player: socket };
+                    });
+                };
+            })
+            .catch((error) => console.error(error));
+        return () => socket?.close();
     }, [setRoomSocket]);
     useEffect(() => {
         const stateChangeHandler = (event: MessageEvent) => {
@@ -50,7 +56,7 @@ const Player = () => {
     }, [roomSocket, playerState, setPlayerState]);
     return (
         <Box display="flex" flexDirection="column" minHeight="100%">
-            <Box children={<PlayerWindow playerRef={playerRef} />} />
+            <PlayerWindow playerRef={playerRef} />
             <Box children={<PlayerControl />} flexGrow={1} />
         </Box>
     );
