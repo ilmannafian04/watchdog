@@ -1,4 +1,4 @@
-FROM python:alpine
+FROM python:3.8.6-alpine
 
 WORKDIR /home
 RUN apk update && \
