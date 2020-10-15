@@ -51,6 +51,9 @@ const Player = () => {
                 case 'changeVideo':
                     setPlayerState({ ...playerState, url: message.data });
                     break;
+                case 'seekPlayer':
+                    playerRef.current?.seekTo(message.data, 'fraction');
+                    break;
                 default:
             }
         };

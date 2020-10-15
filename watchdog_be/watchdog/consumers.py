@@ -51,22 +51,29 @@ class WatchPartyConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive_json(self, content, **kwargs):
+        handler_type = ''
         if content['type'] == 'playerCommand':
             await self.channel_layer.group_send(self.room_group_name, {'type': 'watch.player_command',
                                                                        'broadcast_sender': self.channel_name,
                                                                        'data': content['data']})
         elif content['type'] == 'changeVideo':
             await self.set_video_in_model(content['data'])
-            await self.channel_layer.group_send(self.room_group_name, {'type': 'watch.change_video',
-                                                                       'broadcast_sender': self.channel_name,
+            handler_type = 'watch.change_video'
+        elif content['type'] == 'seekPlayer':
+            handler_type = 'watch.seek_player'
+        if handler_type != '':
+            await self.channel_layer.group_send(self.room_group_name, {'type': handler_type,
                                                                        'data': content['data']})
-
-    async def watch_change_video(self, event):
-        await self.send_json({'type': 'changeVideo', 'data': event['data']})
 
     async def watch_player_command(self, event):
         if event['broadcast_sender'] != self.channel_name:
             await self.send_json({'type': 'playerCommand', 'data': event['data']})
+
+    async def watch_change_video(self, event):
+        await self.send_json({'type': 'changeVideo', 'data': event['data']})
+
+    async def watch_seek_player(self, event):
+        await self.send_json({'type': 'seekPlayer', 'data': event['data']})
 
     @database_sync_to_async
     def set_video_in_model(self, url):

@@ -13,6 +13,8 @@ const PlayerControl = () => {
     const playerProgress = useRecoilValue(playerProgressAtom);
     const currentRoom = useRecoilValue(currentRoomAtom);
     const roomSocket = useRecoilValue(roomSocketAtom);
+    const [isSeeking, setIsSeeking] = useState(false);
+    const [seekValue, setSeekValue] = useState(0);
     const setPlaying = (playing: boolean) => {
         setPlayerState((state) => {
             return { ...state, playing: playing };
@@ -23,10 +25,30 @@ const PlayerControl = () => {
         roomSocket.player?.send(JSON.stringify({ type: 'changeVideo', data: urlForm }));
         setUrlForm('');
     };
+    const seekEndHandler = (event: ChangeEvent<{}>, value: number | number[]) => {
+        setIsSeeking(false);
+        if (typeof value === 'number') {
+            roomSocket.player?.send(
+                JSON.stringify({
+                    type: 'seekPlayer',
+                    data: value / 100,
+                })
+            );
+        }
+    };
     return (
         <Box width="100%">
             <Box paddingX="2rem" paddingY="1rem" display="flex" flexDirection="column">
-                <Box children={<Slider />} marginBottom="1rem" />
+                <Box marginBottom="1rem">
+                    <Slider
+                        value={isSeeking ? seekValue : playerProgress.played * 100}
+                        onMouseDown={() => setIsSeeking(true)}
+                        onChange={(event, value) => {
+                            if (typeof value === 'number') setSeekValue(value);
+                        }}
+                        onChangeCommitted={seekEndHandler}
+                    />
+                </Box>
                 <Box display="flex">
                     <form onSubmit={handleSetUrl}>
                         <Box display="flex">
