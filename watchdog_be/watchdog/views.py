@@ -4,6 +4,7 @@ import string
 import namesgenerator
 from django.forms import model_to_dict
 from django.http import HttpResponse, JsonResponse
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -37,13 +38,20 @@ class WatchRoomView(APIView):
 
     @staticmethod
     def get(request):
-        rooms = WatchRoom.objects.filter(owner=request.user)
-        result = []
-        for room in rooms:
-            result.append({'id': room.id,
-                           'name': room.name,
-                           'memberCount': len(WatchRoomWatcher.objects.filter(room=room))})
-        return Response(result)
+        if 'id' in request.GET:
+            try:
+                room = WatchRoom.objects.get(id=int(request.GET['id']))
+                return Response({'room': model_to_dict(room)})
+            except WatchRoom.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            rooms = WatchRoom.objects.filter(owner=request.user)
+            result = []
+            for room in rooms:
+                result.append({'id': room.id,
+                               'name': room.name,
+                               'memberCount': len(WatchRoomWatcher.objects.filter(room=room))})
+            return Response(result)
 
     @staticmethod
     def post(request):

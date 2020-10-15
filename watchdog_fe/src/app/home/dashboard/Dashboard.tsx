@@ -33,7 +33,10 @@ const Dashboard = () => {
                                         <ListItemIcon>
                                             <PlayCircleOutlineIcon />
                                         </ListItemIcon>
-                                        <ListItemText primary={room.name} secondary={`${room.memberCount} watcher`} />
+                                        <ListItemText
+                                            primary={room.name}
+                                            secondary={room.memberCount ? `${room.memberCount} watcher` : null}
+                                        />
                                     </ListItem>
                                 ))}
                             </Box>
