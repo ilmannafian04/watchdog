@@ -9,7 +9,7 @@ import PlayerWindow from './PlayerWindow';
 import roomSocketAtom from '../../../atom/roomSocketAtom';
 import playerStateAtom from '../../../atom/playerStateAtom';
 import { BaseWebSocketDTO } from '../../../type/dto';
-import { baseUrl, wsProtocol } from '../../../util/urlResolver';
+import { baseUrl, isDev, wsProtocol } from '../../../util/urlResolver';
 
 const Player = () => {
     const [roomSocket, setRoomSocket] = useRecoilState(roomSocketAtom);
@@ -19,10 +19,9 @@ const Player = () => {
     useEffect(() => {
         let socket: WebSocket;
         if (roomCode) {
+            const host = isDev() ? baseUrl(wsProtocol) : `ws://${window.location.host}`;
             socket = new WebSocket(
-                `${baseUrl(wsProtocol)}/ws/watch/${roomCode}/?token=${window.localStorage.getItem(
-                    'watchdogAccessToken'
-                )}`
+                `${host}/ws/watch/${roomCode}/?token=${window.localStorage.getItem('watchdogAccessToken')}`
             );
             socket.onopen = () => {
                 setRoomSocket((prev) => {

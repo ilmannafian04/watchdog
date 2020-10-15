@@ -11,7 +11,7 @@ import './index.css';
 import { jwtRequestInterceptor, jwtResponseInterceptor } from './util/jwtInterceptor';
 import { baseUrl, httpProtocol, isDev } from './util/urlResolver';
 
-if (isDev()) Axios.defaults.baseURL = `${baseUrl(httpProtocol)}/api`;
+Axios.defaults.baseURL = isDev() ? `${baseUrl(httpProtocol)}/api` : `/api`;
 Axios.interceptors.request.use(jwtRequestInterceptor);
 Axios.interceptors.response.use((response) => response, jwtResponseInterceptor);
 
