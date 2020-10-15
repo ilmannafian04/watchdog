@@ -37,6 +37,7 @@ const ChatForm = () => {
                     value={message}
                     onChange={messageChangeHandler}
                     onKeyPress={handleKeyPress}
+                    variant="outlined"
                 />
                 <Button type="submit" disabled={message.length === 0}>
                     Send

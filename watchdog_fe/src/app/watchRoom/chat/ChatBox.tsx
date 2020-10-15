@@ -36,7 +36,7 @@ const ChatBox = () => {
         }
     }, [messages]);
     return (
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" paddingX="0.5rem">
             {chatHistory.concat(messages).map((message, index) => (
                 <ChatMessage name={message.name} message={message.message} color={message.color} key={index} />
             ))}

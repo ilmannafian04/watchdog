@@ -31,7 +31,7 @@ const Chat = () => {
         return () => socket?.close();
     }, [setRoomSocket, roomCode]);
     return (
-        <Box display="flex" flexDirection="column" height={window.innerHeight} width="300px">
+        <Box display="flex" flexDirection="column" height={window.innerHeight} width="300px" paddingY="0.5rem">
             <ChatHeader room={currentRoom} />
             <Box flexGrow={1} maxHeight="100%" style={{ overflowY: 'scroll' }} children={<ChatBox />} />
             <ChatForm />
