@@ -17,7 +17,8 @@ const Chat = () => {
     useEffect(() => {
         let socket: WebSocket;
         if (roomCode) {
-            const host = isDev() ? baseUrl(wsProtocol) : `ws://${window.location.host}`;
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = isDev() ? baseUrl(wsProtocol) : `${protocol}://${window.location.host}`;
             socket = new WebSocket(
                 `${host}/ws/chat/${roomCode}/?token=${window.localStorage.getItem('watchdogAccessToken')}`
             );
